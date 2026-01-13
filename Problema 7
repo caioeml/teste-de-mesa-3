@@ -1,0 +1,100 @@
+using System;
+
+class Investimento
+{
+    public decimal ValorPresente { get; set; }  //aqui usei get e set pela primeira vez para facilitar a atribuição 
+    public decimal TaxaMensal { get; set; }      
+    public int MesResgate { get; set; } = 5;     
+
+    public void MostrarTabelaComResgateAcumulado()
+    {
+        // método de datas q foi pedido no problema 6
+        DateTime inicio = DateTime.Today;
+        DateTime fim = inicio.AddMonths(8).AddDays(10);
+
+        int meses = 8;
+        int diasExtras = (fim - inicio.AddMonths(8)).Days;
+
+        decimal saldo = ValorPresente;
+
+        decimal rendimentoAcumulado = 0m; 
+        decimal resgateTotal = 0m;        
+        decimal rendimentoRestante = 0m;  
+
+        Console.WriteLine("PROBLEMA 7 - RESGATE DO RENDIMENTO ACUMULADO NO 5o MES");
+        Console.WriteLine($"Periodo (datas): {meses} meses e {diasExtras} dias");
+        Console.WriteLine($"Inicio: {inicio:dd/MM/yyyy}  Fim: {fim:dd/MM/yyyy}");
+        Console.WriteLine();
+        Console.WriteLine("Mes\tSaldo Inicial\tJuros Mes\tRend. Acum.\tResgate\t\tSaldo Liquido");
+        Console.WriteLine("----------------------------------------------------------------------------------------");
+
+        for (int mes = 1; mes <= meses; mes++)
+        {
+            decimal saldoInicial = saldo;
+            decimal jurosMes = saldoInicial * TaxaMensal;
+
+            
+            saldo += jurosMes;
+
+            // acumula rendimento até o mês do resgate
+            if (mes <= MesResgate)
+                rendimentoAcumulado += jurosMes;
+
+            decimal resgateMes = 0m;
+
+            // No 5º mês, resgata TODO o rendimento acumulado até aqui
+            if (mes == MesResgate)
+            {
+                resgateMes = rendimentoAcumulado;
+                saldo -= resgateMes;
+
+                resgateTotal = resgateMes;     
+                rendimentoAcumulado = 0m;     
+            }
+            else if (mes > MesResgate)
+            {
+                // após o resgate, o que render vira "rendimento restante"
+                rendimentoRestante += jurosMes;
+            }
+
+            Console.WriteLine($"{mes}\t{saldoInicial,12:N2}\t{jurosMes,9:N2}\t{rendimentoAcumulado,10:N2}\t{resgateMes,9:N2}\t{saldo,12:N2}");
+        }
+
+       
+        decimal jurosDias = saldo * TaxaMensal * (diasExtras / 30m);
+        saldo += jurosDias;
+        rendimentoRestante += jurosDias;
+
+        Console.WriteLine("----------------------------------------------------------------------------------------");
+        Console.WriteLine($"+{diasExtras}d\t\t\t{jurosDias,9:N2}\t\t\t\t\t{saldo,12:N2}");
+
+        Console.WriteLine();
+        Console.WriteLine("----- RESUMO (o que o enunciado pede) -----");
+        Console.WriteLine($"Valor Presente Investido (VP): R$ {ValorPresente:N2}");
+        Console.WriteLine($"Taxa de Juros (a.m.): {TaxaMensal * 100m:N2}%");
+        Console.WriteLine($"Numero de Periodos: {meses} meses e {diasExtras} dias");
+        Console.WriteLine($"Resgate do Rendimento (acumulado no 5o mes): R$ {resgateTotal:N2}");
+        Console.WriteLine($"Saldo Liquido Restante: R$ {saldo:N2}");
+        Console.WriteLine($"Rendimento Restante (apos resgate): R$ {rendimentoRestante:N2}");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        
+        // da pra trocar os valores por outros do problema 6 VP: 1000 / 5500 / 12000
+        // Taxa: 0.03 / 0.0248 / 0.02
+        Investimento inv = new Investimento
+        {
+            ValorPresente = 1000m,
+            TaxaMensal = 0.03m
+        };
+
+        inv.MostrarTabelaComResgateAcumulado();
+
+        Console.WriteLine("\nPressione ENTER para finalizar...");
+        Console.ReadLine();
+    }
+}
