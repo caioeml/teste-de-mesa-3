@@ -1,0 +1,84 @@
+using System;
+
+class Investimento
+{
+    public decimal ValorInvestido { get; set; }   
+    public decimal TaxaMensal { get; set; }       
+    public int MesResgate { get; set; } = 5;      // resgate no 5º mês
+
+    public void MostrarTabelaProblema8()
+    {
+        //método de datas
+        DateTime inicio = DateTime.Today;
+        DateTime fim = inicio.AddMonths(8).AddDays(10);
+
+        int meses = 8;
+        int diasExtras = (fim - inicio.AddMonths(8)).Days; 
+
+        decimal saldo = ValorInvestido;
+        decimal rendimentoAcumulado = 0m;
+
+        Console.WriteLine("\nValor Investido\tTaxa de Juros\tRendimento\tPeriodo (a.m.)\tResgate\t\tSaldo Liquido");
+        Console.WriteLine("----------------------------------------------------------------------------------------------");
+
+        // 8 meses
+        for (int mes = 1; mes <= meses; mes++)
+        {
+            decimal rendimentoMes = saldo * TaxaMensal; // juros do mês
+            saldo += rendimentoMes;
+
+            // acumula rendimento até o mês do resgate
+            if (mes <= MesResgate)
+                rendimentoAcumulado += rendimentoMes;
+
+            decimal resgate = 0m;
+
+            // resgata o rendimento acumulado no 5º mês
+            if (mes == MesResgate)
+            {
+                resgate = rendimentoAcumulado;
+                saldo -= resgate;
+                rendimentoAcumulado = 0m;
+            }
+
+            Console.WriteLine($"{ValorInvestido,13:N2}\t{TaxaMensal * 100m,10:N2}%\t{rendimentoMes,10:N2}\t{mes,11}\t{resgate,8:N2}\t{saldo,12:N2}");
+        }
+
+        // +10 dias
+        decimal fracaoMes = diasExtras / 30m;
+        decimal rendimentoDias = saldo * TaxaMensal * fracaoMes;
+        saldo += rendimentoDias;
+
+        Console.WriteLine("----------------------------------------------------------------------------------------------");
+        Console.WriteLine($"{ValorInvestido,13:N2}\t{TaxaMensal * 100m,10:N2}%\t{rendimentoDias,10:N2}\t{(meses + fracaoMes),11:N2}\t{0,8:N2}\t{saldo,12:N2}");
+
+        Console.WriteLine("\nSaldo Liquido Final: R$ " + saldo.ToString("N2"));
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("PROBLEMA 8 - ENTRADAS");
+
+        Console.Write("Valor investido (ex: 1000, 5500, 12000): ");
+        decimal valor = decimal.Parse(Console.ReadLine());
+
+        Console.Write("Taxa de juros a.m. em % (ex: 3, 2.48, 2): ");
+        decimal taxaPct = decimal.Parse(Console.ReadLine());
+        decimal taxa = taxaPct / 100m;
+
+        Investimento inv = new Investimento
+        {
+            ValorInvestido = valor,
+            TaxaMensal = taxa,
+            MesResgate = 5
+        };
+
+        inv.MostrarTabelaProblema8();
+
+        Console.WriteLine("\nPressione ENTER para finalizar...");
+        Console.ReadLine();
+    }
+}
