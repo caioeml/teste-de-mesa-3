@@ -1,55 +1,55 @@
 using System;
 
-int vp = 0;
-double taxa = 0;
-
-Console.WriteLine("=== PROBLEMA 6 ===");
-
-Console.WriteLine("Escolha o Valor Presente (VP):");
-Console.WriteLine("1 - 1000");
-Console.WriteLine("2 - 5500");
-Console.WriteLine("3 - 12000");
-Console.Write("Opcao: ");
-string opVp = Console.ReadLine();
-
-if (opVp == "1") vp = 1000;
-else if (opVp == "2") vp = 5500;
-else if (opVp == "3") vp = 12000;
-else
+class Program
 {
-    Console.WriteLine("Opcao invalida.");
-    return;
+    static void Main()
+    {
+        int vp = 0;
+        double taxaMensal = 0;
+
+        Console.WriteLine("=== PROBLEMA 6 ===");
+
+        Console.WriteLine("Escolha o Valor Presente (VP):");
+        Console.WriteLine("1 - 1000");
+        Console.WriteLine("2 - 5500");
+        Console.WriteLine("3 - 12000");
+        Console.Write("Opcao: ");
+        string opVp = Console.ReadLine();
+
+        if (opVp == "1") vp = 1000;
+        else if (opVp == "2") vp = 5500;
+        else if (opVp == "3") vp = 12000;
+        else { Console.WriteLine("Opcao invalida."); return; }
+
+        Console.WriteLine("\nEscolha a taxa a.m.:");
+        Console.WriteLine("1 - 3% (0,03)");
+        Console.WriteLine("2 - 2,48% (0,0248)");
+        Console.WriteLine("3 - 2% (0,02)");
+        Console.Write("Opcao: ");
+        string opTaxa = Console.ReadLine();
+
+        if (opTaxa == "1") taxaMensal = 0.03;
+        else if (opTaxa == "2") taxaMensal = 0.0248;
+        else if (opTaxa == "3") taxaMensal = 0.02;
+        else { Console.WriteLine("Opcao invalida."); return; }
+
+        DateTime inicio = DateTime.Today;
+        DateTime fim = inicio.AddMonths(8).AddDays(10);
+
+        int dias = (fim - inicio).Days;
+
+        // usando (base 365)
+        double taxaDiaria = Math.Pow(1.0 + taxaMensal, 1.0 / 365.0) - 1.0;
+
+        double vf = vp * Math.Pow(1.0 + taxaDiaria, dias);
+
+        Console.WriteLine("\n--- RESULTADO (por dias, base 365) ---");
+        Console.WriteLine($"Inicio: {inicio:dd/MM/yyyy}");
+        Console.WriteLine($"Fim:    {fim:dd/MM/yyyy}");
+        Console.WriteLine($"VP: R$ {vp}");
+        Console.WriteLine($"Taxa mensal: {taxaMensal * 100:F2}% a.m.");
+        Console.WriteLine($"Periodo: {dias} dias");
+        Console.WriteLine($"Taxa diaria efetiva: {taxaDiaria * 100:F6}% a.d.");
+        Console.WriteLine($"VF: R$ {vf:F2}");
+    }
 }
-
-
-Console.WriteLine("\nEscolha a taxa a.m.:");
-Console.WriteLine("1 - 3% (0,03)");
-Console.WriteLine("2 - 2,48% (0,0248)");
-Console.WriteLine("3 - 2% (0,02)");
-Console.Write("Opcao: ");
-string opTaxa = Console.ReadLine();
-
-if (opTaxa == "1") taxa = 0.03;
-else if (opTaxa == "2") taxa = 0.0248;
-else if (opTaxa == "3") taxa = 0.02;
-else
-{
-    Console.WriteLine("Opcao invalida.");
-    return;
-}
-
-
-DateTime inicio = DateTime.Today;
-DateTime fim = inicio.AddMonths(8).AddDays(10);
-
-int dias = (fim - inicio).Days;
-double mesesAprox = dias / 30.0; 
-
-
-double vf = vp * Math.Pow(1 + taxa, mesesAprox);
-
-Console.WriteLine("\n--- RESULTADO ---");
-Console.WriteLine($"VP: R$ {vp}");
-Console.WriteLine($"Taxa a.m.: {taxa * 100}%");
-Console.WriteLine($"Periodo: {dias} dias (~ {mesesAprox:F2} meses)");
-Console.WriteLine($"VF (Rendimento Futuro): R$ {vf:F2}");
